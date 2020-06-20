@@ -1,0 +1,24 @@
+<div class = "container-fluid px-0" style = "width:100%">
+	<nav class = "navbar  fixed-top navbar-expand-lg navbar-dark bg-dark" >
+		<a class = "navbar-brand" href = "/expenses">Home</a>
+		<button class = "navbar-toggler" type = "button" data-toggle="collapse" data-target = "#menuContent"
+				aria-controls="menuContent" aria-expanded="false" aria-label = "Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class = "collapse navbar-collapse" id = "menuContent">
+			<ul class = "navbar-nav mr-auto">
+				<li class = "nav-item">
+					<a class = "navbar-brand" href = "/expenses/new">Add Expense</a>
+				</li>
+
+			</ul>
+			<span class = "nav-item mr-4">
+					<a href = "#" style = "color:white"><%= currentUser.username %></a>
+			</span>
+			<span class = "nav-item mr-4">
+					<a href = "/logout" style = "color:white">Logout</a>
+			</span>
+
+		</div>
+	</nav>
+</div>

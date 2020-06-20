@@ -1,0 +1,21 @@
+<%- include("../partials/header") %>
+<div class = "container login">
+	<h2>LOGIN</h2>
+	<form action = "/login" method = "POST">
+		<div class = "form-group">
+			<label for = "username">Username </label>
+			<input class = "form-control"  id = "username" type = "text" name = "username" 
+				   placeholder="Type your username here" required>
+		</div>
+		<div class = "form-group">
+			<label for = "password">Password</label>
+			<input class = "form-control" id = "password" type = "password" name = "password" 
+				   placeholder="Type your password here" required>
+		</div>
+		<button type = "submit" class = "btn btn-lg btn-outline-light btn-block">SUBMIT</button>
+		<a class = "link" href = "/">Go Back</a>
+		<a class = "link" style = "float:right" href = "#">Forgot Password</a>
+	</form>
+</div>
+
+<%- include("../partials/footer") %>

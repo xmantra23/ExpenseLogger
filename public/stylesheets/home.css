@@ -1,0 +1,194 @@
+body{
+	margin: 0.5px;
+	background: rgb(2,0,36);
+	background: -moz-linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,66,121,1) 0%, rgba(0,134,255,0.7903536414565826) 100%);
+	background: -webkit-linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,66,121,1) 0%, rgba(0,134,255,0.7903536414565826) 100%);
+	background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,66,121,1) 0%, rgba(0,134,255,0.7903536414565826) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#020024",endColorstr="#0086ff",GradientType=1);
+}
+
+.home h1{
+	font-size: 60px;
+	font-weight: 300;
+}
+.home h2{
+	font-weight:300;
+}
+.home i{
+	position: relative;
+	display: block;
+	margin-left:auto;
+	margin-right:auto;
+	border-radius:50px;
+	width: 20%;
+	animation: logoAnimation 0.9s 0s linear infinite;
+}
+
+.home{
+	margin: 0;
+	width:100%;
+	position: absolute;
+	top: 20%;
+	left: 50%;
+	-ms-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+	transform: translateX(-50%);
+	text-align:center;
+	font-family: 'Open Sans Condensed', sans-serif;
+	color: white;
+}
+
+.home .btn-secondary{
+	letter-spacing: 4px;
+	margin-right: 10px;
+}
+
+.login{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	width: 30%;
+	background-color: #474040;
+	color:white;
+	padding: 50px 15px 25px 15px;
+	border-radius: 5px;
+}
+
+.login h2, .register h2, .expense h2{
+	text-align: center;
+	font-weight: 300;
+	letter-spacing: 4px;
+}
+
+.login .btn, .register .btn, .expense .btn{
+	margin-top: 30px;
+	margin-bottom: 15px;
+}
+
+.login .link, .register .link, .expense .link{
+	color: white;
+}
+
+.register{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	width: 30%;
+	background-color: #474040;
+	color:white;
+	padding: 30px 15px 25px 15px;
+	border-radius: 5px;
+}
+
+.register .form-control{
+	margin: 25px 0px;
+}
+
+.expense .form-group.row{
+	margin: 20px 0px;
+}
+
+.expense{
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 40%;
+	background-color: #474040;
+	color:white;
+	padding: 30px 15px 25px 15px;
+	border-radius: 5px;
+	margin-top:75px;
+}
+
+
+#box{
+	width: 100%;
+	margin-top: 100px;
+}
+.stats-1{
+	background-color: white;
+	width: 100%;
+	height: 220px;
+	border-radius: 10px;
+	margin-bottom:50px;
+	box-shadow: 5px 6px	#C8C8C8;
+	padding: 20px;
+}
+.receipt-card{
+	background-color: white;
+	width: 100%;
+	height: 250px;
+	margin-bottom:50px;
+	padding:20px;
+	padding-bottom:25px;
+	border-radius: 10px;
+	box-shadow: 5px 6px #C8C8C8;
+}
+
+.receipt-card form{
+	display:inline;
+}
+
+.receipt-card button{
+	margin-right: 10px;
+	letter-spacing: 2px;
+}
+
+.receipt-card a.btn{
+	margin-right: 10px;
+	letter-spacing: 2px;
+	color:white;
+}
+
+.receipt-card p{
+	line-height:15px;
+}
+
+.receipt-card .footer{
+	margin-top: 25px;
+}
+
+@keyframes logoAnimation{
+	0%{
+		border:3px solid transparent;
+		border-top:3px solid green;
+		
+		
+	}
+	25%{
+		border: 3px solid transparent;
+		border-right: 3px solid green;
+	
+		
+	}
+	50%{
+		border:3px solid transparent;
+		border-bottom: 3px solid green;
+		
+		
+	}
+	75%{
+		border:3px solid transparent;
+		border-left: 3px solid green;
+		
+		
+	}
+	100%{
+		border: 3px solid transparent;
+		border-top:  3px solid green;
+		
+		
+	}
+}
+
+
+
+
+
+
+
+
+
+
