@@ -3,65 +3,34 @@
 	<div class = "container">
 		<div id = "box">
 			<div class = "row">
-				<div class = "col-md-4">
-					<div class = "stats-1">
-						<h4>
-							Top 3 Expenses
-						</h4>
-						<ul>
-							<li>Walmart Grocery - $45.00</li>
-							<li>Lg TV - $23.00</li>
-							<li>Table - $30.00</li>
-						</ul>
-					</div>
-					<div class = "stats-1">
-						<h4>
-							Top 3 Expenses
-						</h4>
-						<ul>
-							<li>Walmart Grocery - $45.00</li>
-							<li>Lg TV - $23.00</li>
-							<li>Table - $30.00</li>
-						</ul>
-					</div>
-					<div class = "stats-1">
-						<h4>
-							Top 3 Expenses
-						</h4>
-						<ul>
-							<li>Walmart Grocery - $45.00</li>
-							<li>Lg TV - $23.00</li>
-							<li>Table - $30.00</li>
-						</ul>
-					</div>
-				</div>
-				<div class = "col-md-8">
 					<% if(expenses.length === 0){%> 
 						<h1>You donot have any expenses yet.</h1>
 					<%}%>
 					<% var i = 1; %>
 					<% expenses.forEach(function(expense){%>
-						<div class = "receipt-card">
-							<h4><%= i++ %>. Title: <%= expense.title %></h4>
-							<p>
-								<strong>Amount:</strong> $<%= expense.total %>
-								<span style = "float:right"><strong>Transaction Date:</strong> <%= formattedDate(expense.transactionDate) %></span> 
-							</p>	
-							<p><strong>Location:</strong> <%= expense.location %></p>
-							<p><strong>Description: </strong> <%= expense.memo %></p>
-							
-							<a class = "btn btn-primary btn-md" href="/expenses/<%=expense._id%>/edit">Edit Bill </a>	
-							<button class = "btn btn-primary btn-md">View Receipt </button>
-							<form action = "/expenses/<%= expense._id%>?_method=DELETE" method = "POST">
-								<button class = "btn btn-danger btn-md">Delete Bill </button>
-							</form>
-							<div class = "footer">
-								<span><strong>Created At:</strong> <%=formattedDate(expense.createdAt)%></span>
-								<span style = "float:right"><strong>Last Updated:</strong> <%=formattedDate(expense.updatedAt)%></span>	
+						<div class = "col-md-6">
+							<div class = "receipt-card">
+								<h4><%= i++ %>. Title: <%= expense.title %></h4>
+								<p>
+									<strong>Amount:</strong> $<%= expense.total %>
+									<span style = "float:right"><strong>Transaction Date:</strong> <%= formattedDate(expense.transactionDate) %></span> 
+								</p>	
+								<p><strong>Location:</strong> <%= expense.location %></p>
+								<p><strong>Description: </strong> <%= expense.memo %></p>
+
+								<a class = "btn btn-primary btn-md" href="/expenses/<%=expense._id%>/edit">Edit Bill </a>
+								<a class = "btn btn-primary btn-md" href="/receipts/<%=expense._id%>" target="_blank">View Receipt </a>
+
+								<form action = "/expenses/<%= expense._id%>?_method=DELETE" method = "POST">
+									<button class = "btn btn-danger btn-md">Delete Bill </button>
+								</form>
+								<div class = "footer">
+									<span><strong>Created At:</strong> <%=formattedDate(expense.createdAt)%></span>
+									<span style = "float:right"><strong>Last Updated:</strong> <%=formattedDate(expense.updatedAt)%></span>	
+								</div>
 							</div>
 						</div>
 					<% }); %>
-				</div>
 			</div>
 		</div>
 	</div>
