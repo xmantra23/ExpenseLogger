@@ -1,4 +1,11 @@
 <%- include("../partials/header") %>
+<div class = "container">
+	<% if(error && error.length > 0){ %>
+		<div class = "alert alert-danger" role = "alert">
+			<%= error %>	
+		</div>
+	<%}%>
+</div>
 <div class = "container login">
 	<h2>LOGIN</h2>
 	<form action = "/login" method = "POST">

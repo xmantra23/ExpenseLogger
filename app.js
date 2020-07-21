@@ -7,6 +7,7 @@ var LocalStrategy = require('passport-local');
 var User = require('./models/user');
 var expressSession = require("express-session");
 var methodOverride = require("method-override");
+var flash = require("connect-flash");
 var app = express();
 
 //------------ routes-----------------------------------//
@@ -19,6 +20,7 @@ app.use(express.static(__dirname + "/public"));
 //app.use(express.static(__dirname + "/upload_receipts"));
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(methodOverride("_method"));
+app.use(flash());
 
 
 //------------------ DATABASE CONNECTION----------------//
@@ -39,7 +41,9 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 //---------------------- setting up global variables -----------//
-app.use(function(req,res,next){				
+app.use(function(req,res,next){
+	res.locals.error = req.flash("error");
+	res.locals.success = req.flash("success");
 	res.locals.currentUser = req.user;
 	var today = new Date();
 	var month = today.getMonth()+1;

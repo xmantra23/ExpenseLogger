@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var Expense = require("../models/expense");
+var middleware = require("../middleware"); //since only one file named index.js in middleware , don't have to specify it.
 
 // file upload settings ------------------------------------------
 var path = require('path');
@@ -40,100 +41,85 @@ cloudinary.config({
 //-----------------------------------------------------------------------------------------------
 
 //new
-router.get("/expenses/new",function(req,res){
-	if(req.isAuthenticated()){
-		res.render("expenses/new");
-	}else{
-		res.send("Not logged in");
-	}
+router.get("/expenses/new",middleware.isLoggedIn,function(req,res){
+	res.render("expenses/new");
 });
 
 //edit
-router.get("/expenses/:id/edit",function(req,res){
-	if(req.isAuthenticated()){
-		Expense.findById(req.params.id,function(err,foundExpense){
-			if(err){
-				console.log(err);
-			}else{
-				res.render("expenses/edit",{expense:foundExpense});
-			}
-		});
-	}else{
-		res.send("Not logged in");
-	}
+router.get("/expenses/:id/edit",middleware.checkOwnership,function(req,res){
+	Expense.findById(req.params.id,function(err,foundExpense){
+		if(err){
+			console.log(err);
+		}else{
+			res.render("expenses/edit",{expense:foundExpense});
+		}
+	});
 });
 
 //create
-router.post("/expenses",upload.single('receipt'),function(req,res){
-	if(req.isAuthenticated()){
-		if(req.fileValidationError){
-			return res.redirect("/expenses/new");
-		}
-		//console.log(req.file);
-		cloudinary.v2.uploader.upload(req.file.path,
-		{folder:"ExpenseTracker/Upload_Receipts/" + req.user.username},function(err,result){
-			if(err){
-				console.log(err);
-				return res.redirect('back');
-			}
-			var newExpense = new Expense(req.body.expense);
-			newExpense.creator.id = req.user._id;
-			newExpense.creator.username = req.user.username;
-			newExpense.receiptImage = result.secure_url;
-			newExpense.receiptId = result.public_id;
-			Expense.create(newExpense,function(err,newlyCreatedExpense){
-				if(err){
-					console.log(err.message);
-					return res.redirect("/expenses");
-				}else{
-					res.redirect("/expenses");
-				}
-			});
-		});
-	}else{
-		res.send("Not logged in");
+router.post("/expenses",middleware.isLoggedIn,upload.single('receipt'),function(req,res){
+	if(req.fileValidationError){
+		return res.redirect("/expenses/new");
 	}
+	//console.log(req.file);
+	cloudinary.v2.uploader.upload(req.file.path,
+	{folder:"ExpenseTracker/Upload_Receipts/" + req.user.username},function(err,result){
+		if(err){
+			console.log(err);
+			return res.redirect('back');
+		}
+		var newExpense = new Expense(req.body.expense);
+		newExpense.creator.id = req.user._id;
+		newExpense.creator.username = req.user.username;
+		newExpense.receiptImage = result.secure_url;
+		newExpense.receiptId = result.public_id;
+		Expense.create(newExpense,function(err,newlyCreatedExpense){
+			if(err){
+				console.log(err.message);
+				return res.redirect("/expenses");
+			}else{
+				res.redirect("/expenses");
+			}
+		});
+	});
 });
 
 //update
-router.put("/expenses/:id",upload.single('receipt'),function(req,res){
-	if(req.isAuthenticated()){
-		Expense.findById(req.params.id, async function(err,foundExpense){
-			if(err){
-				console.log(err);
-			}else{
-				if(req.file){
-					if(req.fileValidationError){
-						return res.redirect("/expenses");
-					}
-					try{
-						await cloudinary.v2.uploader.destroy(foundExpense.receiptId);
-						var result = await cloudinary.v2.uploader.upload(req.file.path,
-								{folder:"ExpenseTracker/Upload_Receipts/" + req.user.username});
-						foundExpense.receiptImage = result.secure_url;
-						foundExpense.receiptId = result.public_id;
-					}catch(err){
-						console.log(err);
-						return res.redirect("back");
-					}
+router.put("/expenses/:id",middleware.checkOwnership,upload.single('receipt'),function(req,res){
+	Expense.findById(req.params.id, async function(err,foundExpense){
+		if(err){
+			console.log(err);
+		}else{
+			if(req.file){
+				if(req.fileValidationError){
+					return res.redirect("/expenses");
+				}
+				try{
+					await cloudinary.v2.uploader.destroy(foundExpense.receiptId);
+					var result = await cloudinary.v2.uploader.upload(req.file.path,
+							{folder:"ExpenseTracker/Upload_Receipts/" + req.user.username});
+					foundExpense.receiptImage = result.secure_url;
+					foundExpense.receiptId = result.public_id;
+				}catch(err){
+					console.log(err);
+					return res.redirect("back");
 				}
 			}
-			
-			foundExpense.title = req.body.title;
-			foundExpense.total = req.body.total;
-			foundExpense.location = req.body.location;
-			foundExpense.memo = req.body.memo;
-			foundExpense.transactionDate = req.body.transactionDate;
-			foundExpense.updatedAt = Date.now();
-			foundExpense.save();
-			res.redirect("/expenses");
-		});
-	};
+		}
 
+		foundExpense.title = req.body.title;
+		foundExpense.total = req.body.total;
+		foundExpense.location = req.body.location;
+		foundExpense.memo = req.body.memo;
+		foundExpense.transactionDate = req.body.transactionDate;
+		foundExpense.updatedAt = Date.now();
+		foundExpense.save();
+		res.redirect("/expenses");
+	});
 });
 
 //show
-router.get("/receipts/:id",function(req,res){
+router.get("/receipts/:id",middleware.checkOwnership,function(req,res){
 	Expense.findById(req.params.id,function(err,foundExpense){
 			if(err){
 				console.log(err.message);
@@ -146,40 +132,37 @@ router.get("/receipts/:id",function(req,res){
 
 //index
 router.get("/expenses",function(req,res){
-	if(req.isAuthenticated()){
-		Expense.find({"creator.id":req.user._id},function(err,foundExpenses){
-			if(err){
-				console.log(err.message);
-			}else{
-				res.render("expenses/index",{expenses:foundExpenses});
-			}
-		});	
-	}else{
-		res.send("Not logged in");
-	}
+	var perPage = 4;
+	var pageQuery = parseInt(req.query.page);
+	var pageNumber = pageQuery ? pageQuery : 1;
+	var noMatch = false;
+
+	Expense.find({"creator.id":req.user._id},function(err,foundExpenses){
+		if(err){
+			console.log(err.message);
+		}else{
+			res.render("expenses/index",{expenses:foundExpenses});
+		}
+	});	
 });
 
 //destroy
-router.delete("/expenses/:id",function(req,res){
-	if(req.isAuthenticated()){
-		Expense.findByIdAndRemove(req.params.id,function(err,removedExpense){
-			if(err)
-				console.log(err);
-			else{
-				try{
-					cloudinary.v2.uploader.destroy(removedExpense.receiptId);
-					res.redirect("/expenses");
-				}catch(err){
-					if(err){
-						console.log("Couldn't delete image /n error: ",err.message );
-						return res.redirect("/expenses");
-					}
+router.delete("/expenses/:id",middleware.checkOwnership,function(req,res){
+	Expense.findByIdAndRemove(req.params.id,function(err,removedExpense){
+		if(err)
+			console.log(err);
+		else{
+			try{
+				cloudinary.v2.uploader.destroy(removedExpense.receiptId);
+				res.redirect("/expenses");
+			}catch(err){
+				if(err){
+					console.log("Couldn't delete image /n error: ",err.message );
+					return res.redirect("/expenses");
 				}
 			}
-		});
-	}else{
-		res.send("Not logged in");
-	}
+		}
+	});
 });
 
 module.exports = router;
