@@ -3,14 +3,14 @@
 	<div class = container>
 		<div id = "box">
 			<div class = "row">
-					<% if(expenses.length === 0){%> 
+					<% if(noMatch){%> 
 						<h1>You donot have any expenses yet.</h1>
 					<%}%>
-					<% var i = 1; %>
+
 					<% expenses.forEach(function(expense){%>
 						<div class = "col-md-6">
 							<div class = "receipt-card">
-								<h4><%= i++ %>. Title: <%= expense.title %></h4>
+								<h4>Title: <%= expense.title %></h4>
 								<p>
 									<strong>Amount:</strong> $<%= expense.total %>
 									<span style = "float:right"><strong>Transaction Date:</strong> <%= formattedDate(expense.transactionDate) %></span> 
@@ -32,7 +32,63 @@
 						</div>
 					<% }); %>
 			</div>
-		</div>
+			<!-- pagination footer -->
+			<nav aria-label = "Page Navigation">
+				<% if(pages && pages > 0){%>
+					<ul class = "pagination justify-content-center">
+						<% if (current == 1) {%>
+							<li class = "page-item disabled"><a class = "page-link">First</a></li>
+						<%} else {%>
+							<li class = "page-item">
+								<a class = "page-link" href = "/expenses<%if(search){%>?search=<%=search%><%}%>">First</a>
+							</li>
+						<%}%>
+
+						<% if (current == 1) {%>
+							<li class="page-item disabled"><a class = "page-link">«</a></li>
+						<%} else {%>
+							<li class = "page-item">
+								<a  class = "page-link" href="/expenses?page=<%= Number(current) - 1 %><%if(search){%>&search=<%=search%><%}%>">«</a>
+							</li>
+						<%}%>
+
+						<% var i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
+						<% if (i !== 1) { %>
+							<li class="page-item disabled"><a class = "page-link">...</a></li>
+						<%}%>
+
+						<% for (; i <= (Number(current) + 4) && i <= pages; i++) {%>
+							<% if (i == current) {%>
+								<li class="page-item active"><a class = "page-link"><%= i %></a></li>
+							<%} else {%>
+								<li class = "page-item">
+									<a class ="page-link" href="/expenses?page=<%= i %><%if(search){%>&search=<%=search%><%}%>"><%= i %></a>
+								</li>
+							<%}%>
+							<% if (i == Number(current) + 4 && i < pages) {%>
+								<li class="page-item disabled"><a class = "page-link">...</a></li>
+							<%}%>
+						<%}%>
+
+						<% if (current == pages) {%>
+							<li class="page-item disabled"><a class = "page-link">»</a></li>
+						<%} else {%>
+							<li class = "page-item">
+								<a class = "page-link" href="/expenses?page=<%= Number(current) + 1 %><%if(search){%>&search=<%=search%><%}%>">»</a>
+							</li>
+						<%}%>
+
+						<% if (current == pages) {%>
+							<li class="page-item disabled"><a class = "page-link">Last</a></li>
+						<%} else {%>
+							<li class = "page-item">
+								<a class = "page-link" href="/expenses?page=<%= pages %><%if(search){%>&search=<%=search%><%}%>">Last</a>
+						 	</li>
+						<%}%>
+					</ul>
+				<%}%>
+			</nav>
+		</div>	
 	</div>
 
 <%- include("../partials/footer") %>

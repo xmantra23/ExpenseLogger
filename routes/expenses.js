@@ -131,19 +131,55 @@ router.get("/receipts/:id",middleware.checkOwnership,function(req,res){
 });
 
 //index
-router.get("/expenses",function(req,res){
+router.get("/expenses",middleware.isLoggedIn,function(req,res){
 	var perPage = 4;
 	var pageQuery = parseInt(req.query.page);
 	var pageNumber = pageQuery ? pageQuery : 1;
 	var noMatch = false;
-
-	Expense.find({"creator.id":req.user._id},function(err,foundExpenses){
-		if(err){
-			console.log(err.message);
-		}else{
-			res.render("expenses/index",{expenses:foundExpenses});
-		}
-	});	
+	
+	if(req.query.search){
+		const regex = new RegExp(escapeRegex(req.query.search),'gi');
+		Expense.find({"creator.id":req.user._id,title:regex}).sort({createdAt: -1}).skip((perPage * pageNumber) - perPage).limit(perPage).exec(function(err,foundExpenses){
+			Expense.countDocuments({"creator.id":req.user._id,title:regex}).exec(function(err,count){
+				if(err){
+				console.log(err);
+				res.redirect("back");
+				}else{
+					if(foundExpenses.length === 0){
+						noMatch = true;
+					}
+					const sortedExpenses = foundExpenses.slice().sort((a, b) => b.createdAt - a.createdAt);
+					res.render("expenses/index",{
+						expenses: foundExpenses,
+						noMatch: noMatch,
+						current: pageNumber,
+						pages: Math.ceil(count/perPage),
+						search: req.query.search
+					});
+				}
+			});
+		});
+	}else{
+		Expense.find({"creator.id":req.user._id}).sort({createdAt: -1}).skip((perPage * pageNumber) - perPage).limit(perPage).exec(function(err,foundExpenses){
+			Expense.countDocuments({"creator.id":req.user._id}).exec(function(err,count){
+				if(err){
+					console.log(err);
+					res.redirect("back");
+				}else{
+					if(foundExpenses.length === 0){
+						noMatch = true;
+					}
+					res.render("expenses/index",{
+						expenses: foundExpenses,
+						noMatch: noMatch,
+						current: pageNumber,
+						pages: Math.ceil(count/perPage),
+						search: req.query.search
+					});
+				}
+			});
+		});
+	}
 });
 
 //destroy
@@ -164,5 +200,9 @@ router.delete("/expenses/:id",middleware.checkOwnership,function(req,res){
 		}
 	});
 });
+
+function escapeRegex(text){
+	return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g,"\\$&");	
+};
 
 module.exports = router;

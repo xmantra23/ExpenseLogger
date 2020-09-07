@@ -7,14 +7,14 @@
 			<label for = "title" class = "col-sm-4 col-form-label">Expense Title :</label>
 			<div class = "col-sm-8">
 				<input class = "form-control"  id = "title" type = "text" name = "expense[title]" 
-				   placeholder="Expense Title" required>	
+				   placeholder="Expense Title (max 36 characters)" maxlength="36" required>	
 			</div>
 		</div>
 		<div class = "form-group row">
 			<label for = "total" class = "col-sm-4 col-form-label">Total Amount ($) :</label>
 			<div class = "col-sm-8">
 				<input class = "form-control"  id = "total" type = "number" name = "expense[total]" 
-					   placeholder="Total Price in $" step = "0.01" required>
+					   placeholder="Total Price in $" step = "0.01" min = "0.01" max = "99999999.99" required>
 			</div>
 		</div>
 		
@@ -22,7 +22,7 @@
 			<label for = "location" class = "col-sm-4 col-form-label">Purchase Location :</label>
 			<div class = "col-sm-8">
 				<input class = "form-control"  id = "location" type = "text" name = "expense[location]" 
-				   placeholder="123 Main Street, Houston, TX" required>	
+				   placeholder="123 Main,dallas,tx (Max 45 chars)" maxlength = "45" required>	
 			</div>
 		</div>
 		<div class = "form-group row">
@@ -36,7 +36,7 @@
 			<label for="memo" class = "col-sm-4 col-form-label">Memo :</label>
 			<div class = "col-sm-8">
 				<input class = "form-control" id = "memo" type = "text" name = "expense[memo]" 
-					   placeholder="short memo about the transaction " required>
+					   placeholder="short description (Max 45 chars)" maxlength = "45" required>
 			</div>
 		</div>
 		<div class = "form-group row">
